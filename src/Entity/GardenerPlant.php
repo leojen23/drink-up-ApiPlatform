@@ -3,13 +3,26 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\handlers\WateringActionProcessor;
 use App\Repository\GardenerPlantRepository;
+use DateInterval;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use WateringHandler;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *  normalizationContext={
+ *      "groups"={"gardenerPlants_read", "users_read"}
+ *  },
+ * denormalizationContext={
+ *      "groups"={"gardenerPlants_write"}
+ * }
+ * 
+ * )
  * @ORM\Entity(repositoryClass=GardenerPlantRepository::class)
  */
 class GardenerPlant
@@ -18,63 +31,120 @@ class GardenerPlant
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @groups({"gardenerPlants_read", "users_read", "gardenerPlants_write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @groups({"gardenerPlants_read", "users_read", "gardenerPlants_write"})
      */
     private $nickname;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @groups({"gardenerPlants_read", "users_read", "gardenerPlants_write"})
      */
     private $sunlight;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @groups({"gardenerPlants_read", "users_read", "gardenerPlants_write"})
      */
     private $size;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @groups({"gardenerPlants_read", "users_read", "gardenerPlants_write"})
      */
     private $season;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @groups({"gardenerPlants_read", "users_read", "gardenerPlants_write"})
      */
     private $topography;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @groups({"gardenerPlants_read", "users_read", "gardenerPlants_write"})
      */
     private $location;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @ORM\GeneratedValue
+     * 
      */
-    private $created_at;
+    private $createdAt;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @ORM\GeneratedValue
+     * 
      */
-    private $updated_at;
+    private $updatedAt;
+
+
+      /**
+     * Récupération du status de l'arrosage
+     * @return int
+     */
+    private function getWateringFrequency(): int {
+        $gardenerPlant = $this;
+        $wateringHandler = new WateringHandler(new WateringActionProcessor());
+        $wateringFrequency = $wateringHandler->process($gardenerPlant);
+        return $wateringFrequency;
+    }
+ /**
+     * @groups({"users_read", "gardenerPlants_read"})
+     * @return string
+     */
+    public function getNextWateringDate():string {
+        $wateringFrequency = $this->getWateringFrequency();
+        $lastWateringDate = new DateTime();
+        $nextWateringDate = $lastWateringDate->modify(sprintf("%u day",$wateringFrequency)); 
+        return $nextWateringDate->format('d-m-Y');
+    }
+ /**
+     * Récupération du status de l'arrosage
+     * @groups({"users_read", "gardenerPlants_read"})
+     * @return int
+     */
+    public function getWateringStatus(){
+        $nextWateringDate = $this->getNextWateringDate();
+        $today = new DateTime();
+        $today = $today->format('d-m-Y');
+
+        if ($today < $nextWateringDate){
+            return 1;
+        } elseif ($nextWateringDate >= $today){
+            return 2;
+        }
+    }
+
+    private function getTodayformatted() {
+        $today = new DateTime();
+    }
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="gardenerPlants")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
+     * @groups({"gardenerPlants_write"})
+   
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Plant::class, inversedBy="gardenerPlants")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
+     * @groups({"gardenerPlants_read", "users_read", "gardenerPlants_write"})
      */
     private $plant;
 
     /**
      * @ORM\OneToMany(targetEntity=Watering::class, mappedBy="gardenerplant")
+     * @groups({"gardenerPlants_read", "users_read"})
      */
     private $waterings;
 
@@ -162,24 +232,24 @@ class GardenerPlant
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTimeImmutable $created_at): self
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updated_at): self
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
-        $this->updated_at = $updated_at;
+        $this->updated_at = $updatedAt;
 
         return $this;
     }
@@ -237,4 +307,6 @@ class GardenerPlant
 
         return $this;
     }
+
+   
 }
