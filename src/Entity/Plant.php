@@ -7,9 +7,17 @@ use App\Repository\PlantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *  normalizationContext={
+ *      "groups"={"plants_read", "users_read"}
+ *  },
+ *  denormalizationContext={
+ *      "groups"={"gardenerPlants_write"}
+ *  }
+ * )
  * @ORM\Entity(repositoryClass=PlantRepository::class)
  */
 class Plant
@@ -18,46 +26,55 @@ class Plant
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @groups({"plants_read", "users_read", "gardernerPlants_write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100)
+     *  @groups({"plants_read", "users_read"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @groups({"plants_read", "users_read"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="text")
+     *  @groups({"plants_read", "users_read"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="text")
+     *  @groups({"plants_read", "users_read"})
      */
     private $exposition;
 
     /**
      * @ORM\Column(type="text")
+     *  @groups({"plants_read", "users_read"})
      */
     private $care;
 
     /**
      * @ORM\Column(type="text")
+     *  @groups({"plants_read", "users_read"})
      */
     private $toxicity;
 
     /**
      * @ORM\Column(type="integer")
+     *  @groups({"plants_read", "users_read"})
      */
     private $frequency;
 
     /**
      * @ORM\Column(type="string", length=50)
+     *  @groups({"plants_read", "users_read"})
      */
     private $type;
 
@@ -80,6 +97,7 @@ class Plant
     {
         $this->gardenerPlants = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {

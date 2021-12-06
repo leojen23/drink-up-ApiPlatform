@@ -9,22 +9,35 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\OrderBy;
 /**
- * @ApiResource()
+ * @ApiResource(
+ * 
+ *  normalizationContext={
+ *      "groups"={"users_read"}
+ *  },
+ * denormalizationContext={
+ *      "groups"={"users_write", "gardenerPlants_write"}
+ * }
+ * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
+
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @groups({"users_read", "users_write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @groups({"users_read", "users_write"})
      */
     private $email;
 
@@ -36,28 +49,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @groups({"users_write"})
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @groups({"users_read", "users_write"})
      */
     private $gender;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @groups({"users_read", "users_write"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @groups({"users_read", "users_write"})
      */
     private $surname;
 
     /**
      * @ORM\Column(type="boolean")
+     * @groups({"users_read", "users_write"})
      */
-    private $is_notified;
+    private $isNotified;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
@@ -71,6 +89,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=GardenerPlant::class, mappedBy="user")
+     * @groups({"users_read"})
      */
     private $gardenerPlants;
 
@@ -83,6 +102,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->gardenerPlants = new ArrayCollection();
         $this->waterings = new ArrayCollection();
+    }
+
+    /**
+     * Récupération du nombre de Plant créées par l'utilisateur
+     * @groups({"users_read"})
+     * @return int
+     */
+    public function getTotalNumberOfGardenerPlants(): int{
+        return count($this->gardenerPlants);
     }
 
     public function getId(): ?int
@@ -212,12 +240,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getIsNotified(): ?bool
     {
-        return $this->is_notified;
+        return $this->isNotified;
     }
 
-    public function setIsNotified(bool $is_notified): self
+    public function setIsNotified(bool $isNotified): self
     {
-        $this->is_notified = $is_notified;
+        $this->isNotified = $isNotified;
 
         return $this;
     }

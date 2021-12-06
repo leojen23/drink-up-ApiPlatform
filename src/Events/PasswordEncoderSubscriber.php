@@ -31,11 +31,11 @@ class PasswordEncoderSubscriber implements EventSubscriberInterface
     }
     public function hashPassword( ViewEvent $event): void{
         $user = $event->getControllerResult(); // on utilise la métthode du notre évènement pour récuperer une instance de USER
-        $method = $event->getRequest()->getMethod(); //on récupérer la méthode de la requette
+        $method = $event->getRequest()->getMethod(); //on récupére la méthode de la requette
         
         //on opère une vérification pour que le code s'effectue seulement s'il s'agit d'une instance de USER et d'une requête en méthode POST
-        if ($user instanceof User && $method ==="POST"){
-            $hash = $this->encoder->hashPassword($user,$user->getPassword());
+        if ($user instanceof User && $method === "POST"){
+            $hash = $this->encoder->hashPassword($user, $user->getPassword());
             $user->setPassword($hash);
         }
     }

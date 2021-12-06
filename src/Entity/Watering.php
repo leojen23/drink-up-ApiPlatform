@@ -4,10 +4,19 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\WateringRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+  * @ApiResource(
+ *  attributes={
+ *   "order": {"watered_at":"desc"}
+ * },
+ *  normalizationContext={
+ *      "groups"={"waterings_read","users_read"}
+ *  }
+ * )
  * @ORM\Entity(repositoryClass=WateringRepository::class)
  */
 class Watering
@@ -16,21 +25,25 @@ class Watering
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @groups({"waterings_read","users_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer")
+     * @groups({"waterings_read","users_read"})
      */
     private $lateness;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @groups({"waterings_read","users_read"})
      */
     private $watered_at;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * 
      */
     private $created_at;
 
@@ -48,6 +61,7 @@ class Watering
     /**
      * @ORM\ManyToOne(targetEntity=GardenerPlant::class, inversedBy="waterings")
      * @ORM\JoinColumn(nullable=false)
+     * 
      */
     private $gardenerplant;
 

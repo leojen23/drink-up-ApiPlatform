@@ -23,6 +23,7 @@ class JwtCreatedSubscriber{
 
         $payload = $event->getData(); // on récupére les données du token
 
+        $payload['id'] = $user->getId();
         $payload['gender'] = $user->getGender();
         $payload['firstname'] = $user->getFirstname();
         $payload['surname'] = $user->getSurname();
