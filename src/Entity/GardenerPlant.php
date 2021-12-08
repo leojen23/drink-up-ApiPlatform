@@ -86,47 +86,6 @@ class GardenerPlant
     private $updatedAt;
 
 
-      /**
-     * Récupération du status de l'arrosage
-     * @return int
-     */
-    private function getWateringFrequency(): int {
-        $gardenerPlant = $this;
-        $wateringHandler = new WateringHandler(new WateringActionProcessor());
-        $wateringFrequency = $wateringHandler->process($gardenerPlant);
-        return $wateringFrequency;
-    }
- /**
-     * @groups({"users_read", "gardenerPlants_read"})
-     * @return string
-     */
-    public function getNextWateringDate():string {
-        $wateringFrequency = $this->getWateringFrequency();
-        $lastWateringDate = new DateTime();
-        $nextWateringDate = $lastWateringDate->modify(sprintf("%u day",$wateringFrequency)); 
-        return $nextWateringDate->format('d-m-Y');
-    }
- /**
-     * Récupération du status de l'arrosage
-     * @groups({"users_read", "gardenerPlants_read"})
-     * @return int
-     */
-    public function getWateringStatus(){
-        $nextWateringDate = $this->getNextWateringDate();
-        $today = new DateTime();
-        $today = $today->format('d-m-Y');
-
-        if ($today < $nextWateringDate){
-            return 1;
-        } elseif ($nextWateringDate >= $today){
-            return 2;
-        }
-    }
-
-    private function getTodayformatted() {
-        $today = new DateTime();
-    }
-
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="gardenerPlants")
      * @ORM\JoinColumn(nullable=true)
@@ -147,6 +106,12 @@ class GardenerPlant
      * @groups({"gardenerPlants_read", "users_read"})
      */
     private $waterings;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     *  * @groups({"gardenerPlants_read", "users_read", "gardenerPlants_write"})
+     */
+    private $lastWateringDate;
 
     public function __construct()
     {
@@ -253,6 +218,7 @@ class GardenerPlant
 
         return $this;
     }
+   
 
     public function getUser(): ?User
     {
@@ -304,9 +270,123 @@ class GardenerPlant
                 $watering->setGardenerplant(null);
             }
         }
+        return $this;
+    }
+     /**
+     * @groups({"users_read", "gardenerPlants_read"})
+     * @return int
+     */
+    public function getWateringFrequency(): int {
+        $gardenerPlant = $this;
+        $wateringHandler = new WateringHandler(new WateringActionProcessor());
+        $wateringFrequency = $wateringHandler->process($gardenerPlant);
+        if ($wateringFrequency < 0){
+            return 0;
+        } elseif ($wateringFrequency == 1){
+            return $wateringFrequency + 1;
+        }
+        return $wateringFrequency;
+    }
+ /**
+     * @groups({"users_read", "gardenerPlants_read"})
+     * @return string
+     */
+    public function getNextWateringDate() {
+        $wateringFrequency = $this->getWateringFrequency();
+        $lastWateringDate = $this->getLastWateringDate();
+        $nextWateringDate = $lastWateringDate->modify('+'.$wateringFrequency.'day'); 
+        return $nextWateringDate->format('d-m-Y');
+    }
+ /**
+     * Récupération du status de l'arrosage
+     * @groups({"users_read", "gardenerPlants_read"})
+     * @return int
+     */
+    public function getWateringStatus(){
+        $wateringFrequency = $this->getWateringFrequency();
+        $lastWateringDate = $this->getLastWateringDate();
+        $lastWateringDate->modify('-'.$wateringFrequency.'day'); 
+        $lastWateringDate = $this->getLastWateringDate();
+        $nextWateringDate = $lastWateringDate->modify('+'.$wateringFrequency.'day');
+        $today = new DateTime();
+        $interval = $today->diff($nextWateringDate);
+        $interval = $nextWateringDate->diff($today);
+        $intervalFormatted = $interval->format("%r%a");
+        
+        if ($intervalFormatted < 0){
+            return 1;
+        } elseif ($intervalFormatted == 0){
+            return 2;
+        }elseif ($intervalFormatted > 0){
+            return 3;
+        }else{
+            return 0;
+        }
+        
+    }
+    /**
+     * Récupération du status de l'arrosage
+     * @groups({"users_read", "gardenerPlants_read"})
+     * @return int
+     */
+    public function getTest() {
+            $wateringFrequency = $this->getWateringFrequency();
+            $lastWateringDate = $this->getLastWateringDate();
+            $lastWateringDate->modify('-'.$wateringFrequency.'day'); 
+            $lastWateringDate = $this->getLastWateringDate();
+            $nextWateringDate = $lastWateringDate->modify('+'.$wateringFrequency.'day');
+            $today = new DateTime();
+            $interval = $today->diff($nextWateringDate);
+            $interval = $nextWateringDate->diff($today);
+            return $interval->format("%r%a");
+            //     $nextWateringDate = $this->getNextWateringDate();
+
+    //     $input = $nextWateringDate;
+    //     $date = strtotime($input);
+    //     return date('d/M/Y h:i:s', $date);
+
+        // $nextWateringDateFormatted = date_create_from_format('d/m/Y', $nextWateringDate);
+        // $today = new DateTime();
+        // $interval = $today->diff($nextWateringDateFormatted);
+        // $interval = $nextWateringDateFormatted->diff($today);
+        // return $interval->format("%r%a");
+        // // $today = new DateTime();
+        // $diff = (array) date_diff($nextWateringDateFormatted, $today );
+        // return $diffDays= $diff['d'];
+        
+        
+        // return $nextWateringDate; 
+      
+        //  $todayFormatted = $today->format('d/m/Y');
+        // $today = $today->format('d/m/Y');
+        
+        // if ($diffDays > 0){
+        //     return 1;
+        // } elseif ($diffDays == 0){
+        //     return 2;
+        // }elseif ($diffDays < 0){
+        //     return 3;
+        // }else{
+        //     return 0;
+        // }
+    }
+    /**
+     * Récupération du status de l'arrosage
+     * @groups({"users_read", "gardenerPlants_read"})
+     *
+     */
+    public function getLastWateringDate(): ?\DateTimeInterface
+    {
+        
+        return $this->lastWateringDate;
+    }
+
+    public function setLastWateringDate(?\DateTimeInterface $lastWateringDate): self
+
+    {
+        // $lastWateringDate = \DateTime::createFromFormat('Y-m-d H:i:s', strtotime('now'));
+        $this->lastWateringDate = $lastWateringDate;
 
         return $this;
     }
-
-   
 }
