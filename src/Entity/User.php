@@ -333,4 +333,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+     /**
+     * Récupération du nombre de Plante ayant besoin d'arrosage ce jour
+     * @groups({"users_read"})
+     * @return int
+     */
+    public function getNumberOfUpToDateWaterings() {
+        $gardenerPlants = $this->getGardenerPlants();
+
+        $plants = [];
+        foreach ($gardenerPlants as $gardenerPlant) {
+                $status = $gardenerPlant->getWateringStatus();
+                if ($status == 1){
+                    $plants[] = $gardenerPlant;
+                }
+            
+            }
+            return count($plants);
+    }
+     /**
+     * Récupération du nombre de Plante ayant besoin d'arrosage ce jour
+     * @groups({"users_read"})
+     * @return int
+     */
+    public function getNumberOnDayWaterings() {
+        $gardenerPlants = $this->getGardenerPlants();
+
+        $plants = [];
+        foreach ($gardenerPlants as $gardenerPlant) {
+                $status = $gardenerPlant->getWateringStatus();
+                if ($status == 2){
+                    $plants[] = $gardenerPlant;
+                }
+            
+            }
+            return count($plants);
+    }
+
+/**
+     * Récupération du nombre de Plantes ayant un retard d'arrosge
+     * @groups({"users_read"})
+     * @return int
+     */
+    public function getNumberOfLateWaterings() {
+        $gardenerPlants = $this->getGardenerPlants();
+
+        $plants = [];
+        foreach ($gardenerPlants as $gardenerPlant) {
+                $status = $gardenerPlant->getWateringStatus();
+                if ($status == 3){
+                    $plants[] = $gardenerPlant;
+                }
+            }
+        return count($plants);
+    }
 }

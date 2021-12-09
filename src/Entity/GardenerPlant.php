@@ -329,7 +329,7 @@ class GardenerPlant
      * @groups({"users_read", "gardenerPlants_read"})
      * @return int
      */
-    public function getTest() {
+    public function getNumberOfLateDays() {
             $wateringFrequency = $this->getWateringFrequency();
             $lastWateringDate = $this->getLastWateringDate();
             $lastWateringDate->modify('-'.$wateringFrequency.'day'); 
@@ -339,36 +339,7 @@ class GardenerPlant
             $interval = $today->diff($nextWateringDate);
             $interval = $nextWateringDate->diff($today);
             return $interval->format("%r%a");
-            //     $nextWateringDate = $this->getNextWateringDate();
-
-    //     $input = $nextWateringDate;
-    //     $date = strtotime($input);
-    //     return date('d/M/Y h:i:s', $date);
-
-        // $nextWateringDateFormatted = date_create_from_format('d/m/Y', $nextWateringDate);
-        // $today = new DateTime();
-        // $interval = $today->diff($nextWateringDateFormatted);
-        // $interval = $nextWateringDateFormatted->diff($today);
-        // return $interval->format("%r%a");
-        // // $today = new DateTime();
-        // $diff = (array) date_diff($nextWateringDateFormatted, $today );
-        // return $diffDays= $diff['d'];
-        
-        
-        // return $nextWateringDate; 
-      
-        //  $todayFormatted = $today->format('d/m/Y');
-        // $today = $today->format('d/m/Y');
-        
-        // if ($diffDays > 0){
-        //     return 1;
-        // } elseif ($diffDays == 0){
-        //     return 2;
-        // }elseif ($diffDays < 0){
-        //     return 3;
-        // }else{
-        //     return 0;
-        // }
+    
     }
     /**
      * Récupération du status de l'arrosage
