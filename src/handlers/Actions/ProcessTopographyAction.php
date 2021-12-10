@@ -14,14 +14,17 @@ class ProcessTopographyAction implements IAction {
         $topography = $gardenerPlant->getTopography();
   
         switch ($topography) {
+            case 'Bord de mer':
+                return $frequency -= $frequency * 20/100;
+                break;
             case 'Plaine':
-                return $frequency += $frequency * 5/100;
+                return $frequency += $frequency * 10/100;
                 break;
             case 'Plateau':
-                return $frequency += $frequency * 20/100;
+                return $frequency += $frequency * 10/100;
                 break;
             case 'Montagne':
-                return $frequency += $frequency * 30/100;
+                return $frequency += $frequency * 20/100;
                 break;
             default:
                 return $frequency;

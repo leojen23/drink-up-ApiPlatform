@@ -14,6 +14,10 @@ class WateringActionProcessor{
 
     }
 
+    public function getActions(){
+        return $this->actions;
+    }
+
     public function addAction(IAction $action)
     {
         $this->actions[] = $action;

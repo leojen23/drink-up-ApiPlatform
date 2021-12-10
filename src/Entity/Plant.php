@@ -32,7 +32,7 @@ class Plant
 
     /**
      * @ORM\Column(type="string", length=100)
-     *  @groups({"plants_read", "users_read"})
+     * @groups({"plants_read", "users_read"})
      */
     private $name;
 

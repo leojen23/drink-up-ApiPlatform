@@ -18,13 +18,13 @@ class ProcessSeasonAction implements IAction {
                 return $frequency ;
                 break;
             case 'Eté':
-                return $frequency + 2;
+                return $frequency -= $frequency * 40/100;
                 break;
             case 'Automne':
-                return $frequency - 1;
+                return $frequency -= $frequency * 25/100;
                 break;
             case 'Hiver':
-                return $frequency - 3;
+                return $frequency += $frequency * 50/100;
                 break;
             default:
                 return $frequency;

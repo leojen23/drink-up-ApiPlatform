@@ -14,13 +14,13 @@ class ProcessSunlightAction implements IAction {
         
         switch ($sunlight) {
             case 'Ombragé':
-                return $frequency + ($frequency + 1);
-                break;
-            case 'Lumineux':
                 return $frequency;
                 break;
+            case 'Lumineux':
+                return $frequency -= $frequency * 10/100;
+                break;
             case 'Très Lumineux':
-                return $frequency - ($frequency - 1);
+                return $frequency -= $frequency * 20/100;
                 break;
             default:
                 return $frequency;

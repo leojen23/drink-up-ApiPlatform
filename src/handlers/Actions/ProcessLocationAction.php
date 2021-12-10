@@ -14,7 +14,7 @@ class ProcessLocationAction implements IAction {
 
         switch ($location) {
             case 'Intérieur':
-                return $frequency;
+                return $frequency -= $frequency * 10/100;
                 break;
             case 'Extérieur':
                 return $frequency -= $frequency * 25/100;

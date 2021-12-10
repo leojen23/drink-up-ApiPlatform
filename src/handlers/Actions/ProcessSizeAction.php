@@ -19,7 +19,7 @@ class ProcessSizeAction implements IAction {
                 return $frequency;
                 break;
             case 'Grande':
-                return $frequency += $frequency * 50/100;
+                return $frequency += $frequency * 30/100;
                 break;
             default:
                 return $frequency;
