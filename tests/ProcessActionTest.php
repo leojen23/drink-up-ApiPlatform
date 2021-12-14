@@ -14,12 +14,9 @@ use PHPUnit\Framework\TestCase;
 
 class ProcessActionTest extends TestCase
 
-
-    
 {
     private $initialFrequency = 10;
    
-    
     public function testGardenerPlantIsAnInstance(){
         $gardenerPlant = new GardenerPlant();
         $this->assertInstanceOf(GardenerPlant::class, $gardenerPlant);
@@ -38,8 +35,6 @@ class ProcessActionTest extends TestCase
 
         $this->assertIsInt($frequency);
     }
-
-
     public function testProcessSizeActionReturnsCorrectValue(){
 
         $gardenerPlant =  new GardenerPlant();

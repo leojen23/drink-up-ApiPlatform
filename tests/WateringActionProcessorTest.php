@@ -15,7 +15,6 @@ class WateringActionProcessorTest extends TestCase
         $processor = new WateringActionProcessor();
         $sizeAction = new ProcessSizeAction;
         $processor->addAction( $sizeAction);
-        
         $this->assertIsArray($processor->getActions());
 
     }
@@ -49,5 +48,4 @@ class WateringActionProcessorTest extends TestCase
         $gardenerPlant);
         $this->assertSame(7, $frequency);
     }
-
 }

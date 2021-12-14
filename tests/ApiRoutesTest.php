@@ -45,7 +45,7 @@ class ApiRoutesTest extends ApiTestCase
     {
         static::createClient()->request('POST', 'http://drink-up-apiplatform.test:8080/api/login_check', ['json' => [
             'username' => 'test@test.com',
-            'password' => 'password',
+            'password' => 'passwor',
         ]]);
         
         $this->assertResponseIsSuccessful();

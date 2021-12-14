@@ -10,9 +10,7 @@ class WateringActionProcessor{
     protected GardenerPlant $gardenerPlant;
 
     public function __construct()
-    {
-
-    }
+    {}
 
     public function getActions(){
         return $this->actions;
@@ -24,10 +22,6 @@ class WateringActionProcessor{
         return $this;
     }
 
-     /**
-     *
-     * @param GardenerPlant $collection
-     */
     public function setGardenerPlant(GardenerPlant $gardenerPlant):WateringActionProcessor
     {
         $this->gardenerPlant = $gardenerPlant;

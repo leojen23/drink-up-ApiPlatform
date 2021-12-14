@@ -7,10 +7,8 @@ use App\handlers\Actions\IAction;
 
 class ProcessSeasonAction implements IAction {
 
-   
     public function process(int $frequency, GardenerPlant $gardenerPlant):int
     {
-       
         $season = $gardenerPlant->getSeason();
         
         switch ($season) {
