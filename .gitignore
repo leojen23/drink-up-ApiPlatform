@@ -8,6 +8,9 @@
 /public/bundles/
 /var/
 /vendor/
+/public/.htaccess
+/composer.lock
+/config/packages/nelmio_cors.yaml
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###

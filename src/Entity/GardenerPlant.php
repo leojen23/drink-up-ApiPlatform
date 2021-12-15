@@ -280,18 +280,16 @@ class GardenerPlant
         $gardenerPlant = $this;
         $wateringHandler = new WateringHandler(new WateringActionProcessor());
         $wateringFrequency = $wateringHandler->process($gardenerPlant);
-        if ($wateringFrequency < 0){
-            return 1;
-        } elseif ($wateringFrequency == 1){
+        if ($wateringFrequency <= 1){
             return $wateringFrequency + 1;
-        }
+        } 
         return $wateringFrequency;
     }
  /**
      * @groups({"users_read", "gardenerPlants_read"})
      * @return string
      */
-    public function getNextWateringDate() {
+    public function getNextWateringDate(): string {
         $wateringFrequency = $this->getWateringFrequency();
         $lastWateringDate = $this->getLastWateringDate();
         $nextWateringDate = $lastWateringDate->modify('+'.$wateringFrequency.'day'); 
@@ -325,21 +323,19 @@ class GardenerPlant
         
     }
     /**
-     * Récupération du status de l'arrosage
+     * Récupération du nombre de jour de retard
      * @groups({"users_read", "gardenerPlants_read"})
-     * @return int
+     * @return string
      */
-    public function getNumberOfLateDays() {
-            $wateringFrequency = $this->getWateringFrequency();
-            $lastWateringDate = $this->getLastWateringDate();
-            $lastWateringDate->modify('-'.$wateringFrequency.'day'); 
-            $lastWateringDate = $this->getLastWateringDate();
-            $nextWateringDate = $lastWateringDate->modify('+'.$wateringFrequency.'day');
-            $today = new DateTime();
-            $interval = $today->diff($nextWateringDate);
-            $interval = $nextWateringDate->diff($today);
-            return $interval->format("%r%a");
-    
+    public function getNumberOfLateDays(): string{
+        $wateringFrequency = $this->getWateringFrequency();
+        $lastWateringDate = $this->getLastWateringDate();
+        $lastWateringDate->modify('-'.$wateringFrequency.'day'); 
+        $lastWateringDate = $this->getLastWateringDate();
+        $nextWateringDate = $lastWateringDate->modify('+'.$wateringFrequency.'day');
+        $today = new DateTime();
+        $interval = $nextWateringDate->diff($today);
+        return $interval->format("%r%a");
     }
     /**
      * Récupération du status de l'arrosage
