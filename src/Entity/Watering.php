@@ -18,7 +18,10 @@ use Doctrine\ORM\Mapping as ORM;
  *  }
  * )
  * @ORM\Entity(repositoryClass=WateringRepository::class)
+
  */
+
+ //test
 class Watering
 {
     /**
