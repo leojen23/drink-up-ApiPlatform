@@ -281,7 +281,7 @@ class GardenerPlant
         $wateringHandler = new WateringHandler(new WateringActionProcessor());
         $wateringFrequency = $wateringHandler->process($gardenerPlant);
         if ($wateringFrequency <= 1){
-            return $wateringFrequency + 1;
+            return 2;
         } 
         return $wateringFrequency;
     }
